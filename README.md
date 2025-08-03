@@ -44,7 +44,7 @@ Before using this gem, you need to set up both your Polar.sh dashboard and Rails
    - Complete your organization setup
 
 2. **Generate API Access Token**
-   - Go to Settings → API Keys in your Polar dashboard
+   - Go to Settings → Scroll bottom then click *New Token*
    - Create a new API key with the required scopes:
      - `products:read` and `products:write`
      - `customers:read` and `customers:write`
@@ -61,7 +61,7 @@ Before using this gem, you need to set up both your Polar.sh dashboard and Rails
    - Set up pricing for each product
 
 4. **Configure Webhooks**
-   - Go to Settings → Webhooks
+   - Go to Settings → Webhooks, then click *Add Endpoint*
    - Add your Rails app's webhook endpoint: `https://yourapp.com/webhooks/polar`
    - Select the events you want to receive:
      - `subscription.created`, `subscription.updated`, `subscription.cancelled`
@@ -105,7 +105,7 @@ Before using this gem, you need to set up both your Polar.sh dashboard and Rails
 
 2. **Database Migrations**
    
-   Generate and run migrations for your chosen scenario:
+   Generate and run migrations for your chosen scenario(example):
    
    ```bash
    # For subscription tiers scenario
@@ -195,7 +195,7 @@ puts "✅ Found #{products[:data]&.count || 0} products"
 
 #### 2. Choose Your Implementation Scenario
 
-This gem provides three complete implementation scenarios. Choose the one that fits your business model:
+This gem give three ideas for implementation scenarios:
 
 **📊 Subscription Tiers** - For SaaS apps with monthly/yearly plans and trials
 ```bash
