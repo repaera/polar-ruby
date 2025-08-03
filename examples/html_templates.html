@@ -1,0 +1,162 @@
+<!-- Pricing Page with Polar Checkout -->
+<div class="pricing-page" 
+     data-controller="polar-pricing"
+     data-polar-pricing-selected-plan-id-value="basic">
+  
+  <h1>Choose Your Plan</h1>
+  
+  <div class="pricing-grid">
+    <div class="pricing-card" 
+         data-polar-pricing-target="plan"
+         data-plan-id="basic"
+         data-plan-name="Basic"
+         data-plan-price="$9/month"
+         data-action="click->polar-pricing#planSelected">
+      <h3>Basic Plan</h3>
+      <p class="price">$9/month</p>
+      <ul>
+        <li>Basic features</li>
+        <li>Email support</li>
+        <li>1 user</li>
+      </ul>
+    </div>
+
+    <div class="pricing-card premium" 
+         data-polar-pricing-target="plan"
+         data-plan-id="premium" 
+         data-plan-name="Premium"
+         data-plan-price="$29/month"
+         data-action="click->polar-pricing#planSelected">
+      <h3>Premium Plan</h3>
+      <p class="price">$29/month</p>
+      <ul>
+        <li>All basic features</li>
+        <li>Priority support</li>
+        <li>5 users</li>
+        <li>Advanced analytics</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="checkout-section"
+       data-controller="polar-checkout"
+       data-polar-checkout-product-id-value="<%= @selected_product_id %>"
+       data-polar-checkout-success-url-value="<%= payments_success_url %>"
+       data-polar-checkout-cancel-url-value="<%= payments_cancel_url %>"
+       data-polar-checkout-customer-id-value="<%= current_user&.id %>">
+    
+    <div class="selected-plan">
+      Selected: <span data-polar-pricing-target="selectedPlan">Basic - $9/month</span>
+    </div>
+
+    <button data-polar-checkout-target="button" 
+            class="btn btn-primary btn-large">
+      Subscribe Now
+    </button>
+
+    <div data-polar-checkout-target="spinner" class="spinner hidden">
+      Creating checkout session...
+    </div>
+
+    <div data-polar-checkout-target="error" class="error-message hidden"></div>
+  </div>
+</div>
+
+<!-- Subscription Management Dashboard -->
+<div class="subscription-dashboard">
+  <div class="subscription-card"
+       data-controller="polar-subscription"
+       data-polar-subscription-subscription-id-value="<%= @subscription.polar_subscription_id %>">
+    
+    <h2>Your Subscription</h2>
+    
+    <div class="subscription-details">
+      <p>Plan: <%= @subscription.product_name %></p>
+      <p>Status: <span data-polar-subscription-target="status" 
+                       class="status <%= @subscription.status %>">
+                  <%= @subscription.status.humanize %>
+                </span></p>
+      <p>Next billing: <%= @subscription.current_period_end.strftime("%B %d, %Y") %></p>
+    </div>
+
+    <div class="subscription-actions">
+      <% if @subscription.active? %>
+        <button data-polar-subscription-target="cancelButton"
+                data-action="click->polar-subscription#cancelSubscription"
+                class="btn btn-danger">
+          Cancel Subscription
+        </button>
+      <% else %>
+        <button data-polar-subscription-target="reactivateButton"
+                data-action="click->polar-subscription#reactivateSubscription"
+                class="btn btn-success">
+          Reactivate Subscription
+        </button>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Customer Portal Access -->
+  <div class="portal-section"
+       data-controller="polar-customer-portal"
+       data-polar-customer-portal-customer-id-value="<%= current_user.polar_customer['id'] %>"
+       data-polar-customer-portal-return-url-value="<%= dashboard_url %>">
+    
+    <h3>Manage Your Account</h3>
+    <p>Access your customer portal to update payment methods, download invoices, and more.</p>
+    
+    <button data-polar-customer-portal-target="button"
+            data-action="click->polar-customer-portal#openPortal"
+            class="btn btn-secondary">
+      Manage Subscription
+    </button>
+  </div>
+</div>
+
+<!-- Simple Checkout Button -->
+<div data-controller="polar-checkout"
+     data-polar-checkout-product-id-value="prod_premium_plan"
+     data-polar-checkout-success-url-value="/payments/success"
+     data-polar-checkout-cancel-url-value="/payments/cancel">
+  
+  <button data-polar-checkout-target="button" 
+          class="btn btn-primary">
+    Upgrade to Premium
+  </button>
+
+  <div data-polar-checkout-target="error" class="alert alert-danger hidden"></div>
+</div>
+
+<!-- Inline Benefits Display -->
+<div class="benefits-section">
+  <h3>Your Active Benefits</h3>
+  
+  <% if current_user.subscription_benefits.any? %>
+    <div class="benefits-grid">
+      <% current_user.subscription_benefits.each do |benefit| %>
+        <div class="benefit-card">
+          <h4><%= benefit["description"] %></h4>
+          
+          <% case benefit["type"] %>
+          <% when "github_repository" %>
+            <p>Access to: <%= benefit["properties"]["repository_name"] %></p>
+            <a href="https://github.com/<%= benefit["properties"]["repository_name"] %>" 
+               class="btn btn-sm">View Repository</a>
+               
+          <% when "discord" %>
+            <p>Discord Server Access</p>
+            <a href="<%= benefit["properties"]["invite_url"] %>" 
+               class="btn btn-sm">Join Discord</a>
+               
+          <% when "file_download" %>
+            <p>File Downloads Available</p>
+            <a href="/downloads/<%= benefit["id"] %>" 
+               class="btn btn-sm">Download Files</a>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p>No active benefits. <a href="/pricing">Subscribe</a> to unlock premium features.</p>
+  <% end %>
+</div>
