@@ -13,10 +13,10 @@ A comprehensive Ruby API wrapper for [Polar.sh](https://polar.sh) - the modern b
 
 ## Installation
 
-Add this line to your application's Gemfile:
+Add this line to your application's Gemfile(make sure to specify gem source):
 
 ```ruby
-gem 'polar'
+gem 'polar', github: "repaera/polar-ruby"
 ```
 
 And then execute:
