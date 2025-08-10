@@ -25,12 +25,6 @@ And then execute:
 bundle install
 ```
 
-Or install it yourself as:
-
-```bash
-gem install polar
-```
-
 ## Setup & Configuration
 
 ### Prerequisites
